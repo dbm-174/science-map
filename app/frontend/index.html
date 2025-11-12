@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>GEPRIS Personenkarte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="sidebar">
+    <h1>GEPRIS Personenkarte</h1>
+    <div id="filters">
+      <label>Thema:
+        <select id="topicSelect"></select>
+      </label>
+      <input id="searchBox" placeholder="Suche Name/Projekt...">
+      <button id="applyBtn">Anwenden</button>
+    </div>
+    <div id="legend"></div>
+  </div>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
+
