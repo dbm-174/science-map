@@ -1,0 +1,142 @@
+[
+  {
+    "id": 0,
+    "label": "Exotic Surfaces",
+    "color": "#d14747",
+    "count": 4,
+    "keywords": [
+      "surfaces",
+      "sculptured",
+      "exotic",
+      "new nano",
+      "film structures",
+      "biosensing applications"
+    ]
+  },
+  {
+    "id": 1,
+    "label": "selbstverortungen",
+    "color": "#d19a47",
+    "count": 3,
+    "keywords": [
+      "junger",
+      "dynamiken selbstverortungen",
+      "2011",
+      "umbruche",
+      "kairener graffiti",
+      "kairener"
+    ]
+  },
+  {
+    "id": 2,
+    "label": "mathematik",
+    "color": "#b5d147",
+    "count": 95,
+    "keywords": [
+      "des",
+      "analyse",
+      "mathematik",
+      "den",
+      "nicht",
+      "uber"
+    ]
+  },
+  {
+    "id": 3,
+    "label": "Sozialverhalten",
+    "color": "#62d147",
+    "count": 4,
+    "keywords": [
+      "grk",
+      "sozialer",
+      "verhalten",
+      "interaktionsmodelle",
+      "verhalten interaktionsmodelle",
+      "1134"
+    ]
+  },
+  {
+    "id": 4,
+    "label": "semantische Interaktion",
+    "color": "#47d17e",
+    "count": 6,
+    "keywords": [
+      "semantische",
+      "des",
+      "basierend benutzerinteraktionsprotokollen",
+      "benutzerinteraktionsprotokollen",
+      "prozesserkennung",
+      "prozesserkennung basierend"
+    ]
+  },
+  {
+    "id": 5,
+    "label": "modeling",
+    "color": "#47d1d1",
+    "count": 20,
+    "keywords": [
+      "grk",
+      "analysis",
+      "modeling",
+      "mechanisms food",
+      "738 molecular",
+      "738"
+    ]
+  },
+  {
+    "id": 6,
+    "label": "Transport in komplexen umgebungen",
+    "color": "#477ed1",
+    "count": 7,
+    "keywords": [
+      "komplexen",
+      "transport",
+      "kreisschwimmer",
+      "kreisschwimmer komplexen",
+      "komplexen umgebungen",
+      "umgebungen"
+    ]
+  },
+  {
+    "id": 7,
+    "label": "simulation",
+    "color": "#6247d1",
+    "count": 3,
+    "keywords": [
+      "simulation",
+      "verfahren",
+      "entwicklung",
+      "gittern",
+      "quantitiativen",
+      "interventionellen"
+    ]
+  },
+  {
+    "id": 8,
+    "label": "Untersuchungsmethoden",
+    "color": "#b547d1",
+    "count": 22,
+    "keywords": [
+      "eines",
+      "entwicklung",
+      "untersuchungen",
+      "fur",
+      "situ",
+      "basis"
+    ]
+  },
+  {
+    "id": 9,
+    "label": "Anwendungsfelder",
+    "color": "#d1479a",
+    "count": 36,
+    "keywords": [
+      "fur",
+      "untersuchung",
+      "methoden",
+      "neue",
+      "anwendungen",
+      "eigenschaften"
+    ]
+  }
+]

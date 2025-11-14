@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-import json, sys, re, os
+import json
+import sys
+import re
+import os
 from pathlib import Path
 
 RAW = Path(__file__).resolve().parents[2] / "backend" / "data" / "raw"

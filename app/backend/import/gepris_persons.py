@@ -40,6 +40,7 @@ except Exception:
 
 # ---------------------- Utilities ----------------------
 
+
 def clean_field(v: Optional[str]) -> str:
     return re.sub(r"\s+", " ", (v or "").strip())
 
@@ -54,6 +55,7 @@ NAV_H1_BLOCKLIST = {
     "person",
     "zurück",
 }
+
 
 def get_main_container(soup: BeautifulSoup) -> Tag | BeautifulSoup:
     for sel in [
@@ -70,6 +72,7 @@ def get_main_container(soup: BeautifulSoup) -> Tag | BeautifulSoup:
             return node
     return soup
 
+
 def _text_equals(node: Tag | NavigableString, label: str) -> bool:
     txt = ""
     if isinstance(node, NavigableString):
@@ -77,6 +80,7 @@ def _text_equals(node: Tag | NavigableString, label: str) -> bool:
     elif hasattr(node, "get_text"):
         txt = node.get_text(" ", strip=True)
     return re.fullmatch(label, txt, flags=re.I) is not None
+
 
 def find_label_node(container: Tag | BeautifulSoup, label: str) -> Optional[Tag]:
     # Suche ein Element, dessen sichtbarer Text exakt dem Label entspricht
@@ -90,7 +94,10 @@ def find_label_node(container: Tag | BeautifulSoup, label: str) -> Optional[Tag]
             return el.parent if hasattr(el, "parent") else None
     return None
 
-def extract_block_after_label_multiline(soup: BeautifulSoup, label: str, stop_labels: List[str]) -> str:
+
+def extract_block_after_label_multiline(
+    soup: BeautifulSoup, label: str, stop_labels: List[str]
+) -> str:
     container = get_main_container(soup)
     start = find_label_node(container, label)
     if not start:
@@ -142,6 +149,7 @@ def extract_block_after_label_multiline(soup: BeautifulSoup, label: str, stop_la
     addr = re.sub(r"\n{3,}", "\n\n", addr_raw).strip()
     return addr
 
+
 def extract_address(soup: BeautifulSoup) -> str:
     stop_labels = [
         "ORCID-ID",
@@ -155,9 +163,13 @@ def extract_address(soup: BeautifulSoup) -> str:
         "Publikationen",
         "Zusatzinformationen",
     ]
-    addr = extract_block_after_label_multiline(soup, label="Adresse", stop_labels=stop_labels)
+    addr = extract_block_after_label_multiline(
+        soup, label="Adresse", stop_labels=stop_labels
+    )
     if not addr:
-        addr = extract_block_after_label_multiline(soup, label="Anschrift", stop_labels=stop_labels)
+        addr = extract_block_after_label_multiline(
+            soup, label="Anschrift", stop_labels=stop_labels
+        )
 
     if not addr:
         # Fallback: typischer Address-Container im Inhaltsbereich
@@ -187,10 +199,15 @@ def extract_address(soup: BeautifulSoup) -> str:
             "Hauptnavigation",
             "Detailseite",
         ]
-        lines = [ln for ln in addr.splitlines() if ln.strip() and ln.strip() not in nav_garbage]
+        lines = [
+            ln
+            for ln in addr.splitlines()
+            if ln.strip() and ln.strip() not in nav_garbage
+        ]
         return "\n".join(lines).strip()
 
     return ""
+
 
 def parse_person_name(soup: BeautifulSoup) -> str:
     container = get_main_container(soup)
@@ -213,8 +230,11 @@ def parse_person_name(soup: BeautifulSoup) -> str:
             return t
     # 4) <title> als Fallback
     if soup.title and soup.title.string:
-        return clean_field(re.sub(r"^\s*DFG\s*-\s*GEPRIS\s*-\s*", "", soup.title.string))
+        return clean_field(
+            re.sub(r"^\s*DFG\s*-\s*GEPRIS\s*-\s*", "", soup.title.string)
+        )
     return ""
+
 
 def iter_project_titles_from_person_page(soup: BeautifulSoup) -> List[str]:
     """
@@ -228,7 +248,9 @@ def iter_project_titles_from_person_page(soup: BeautifulSoup) -> List[str]:
         if not re.match(r"^/gepris/projekt/\d+$", u.path):
             continue
         # sichtbarer Text, Fallback title-Attribut oder umgebende Heading
-        title = clean_field(a.get_text(" ", strip=True)) or clean_field(a.get("title") or "")
+        title = clean_field(a.get_text(" ", strip=True)) or clean_field(
+            a.get("title") or ""
+        )
         if not title:
             parent_h = a.find_parent(["h1", "h2", "h3"])
             if parent_h:
@@ -241,6 +263,7 @@ def iter_project_titles_from_person_page(soup: BeautifulSoup) -> List[str]:
 
 # ---------------------- HTTP & Listen-Handling ----------------------
 
+
 def get_soup(
     session: requests.Session,
     url: str,
@@ -252,7 +275,9 @@ def get_soup(
         time.sleep(max(0.0, sleep))
     last_text = ""
     for attempt in range(3):
-        r = session.get(url, params=params, headers=HEADERS, timeout=30, allow_redirects=True)
+        r = session.get(
+            url, params=params, headers=HEADERS, timeout=30, allow_redirects=True
+        )
         last_text = r.text or ""
         if r.status_code == 200 and last_text:
             if debug_save:
@@ -266,17 +291,24 @@ def get_soup(
     r.raise_for_status()
     return BeautifulSoup(last_text, "html.parser")
 
+
 def build_param_variants_person(index: int, hits: int) -> List[dict | None]:
     base = {
         "language": "de",
         "hitsPerPage": str(hits),
         "index": str(index),
     }
-    v1 = {"context": "person", "task": "doSearchExtended", "findButton": "historyCall", **base}
+    v1 = {
+        "context": "person",
+        "task": "doSearchExtended",
+        "findButton": "historyCall",
+        **base,
+    }
     v2 = {"context": "person", "task": "showList", **base}
     v3 = {"context": "person", **base}
     # None = GET ohne Parameter auf OCTOPUS
     return [None, v1, v2, v3]
+
 
 def normalize_person_url(href: str) -> Optional[str]:
     try:
@@ -288,6 +320,7 @@ def normalize_person_url(href: str) -> Optional[str]:
     except Exception:
         pass
     return None
+
 
 def iter_person_links_from_list(soup: BeautifulSoup) -> Iterable[str]:
     seen = set()
@@ -302,7 +335,10 @@ def iter_person_links_from_list(soup: BeautifulSoup) -> Iterable[str]:
 
 # ---------------------- Detailseite einer Person ----------------------
 
-def parse_person_detail(session: requests.Session, url: str, sleep: float = 0.2) -> Dict[str, object]:
+
+def parse_person_detail(
+    session: requests.Session, url: str, sleep: float = 0.2
+) -> Dict[str, object]:
     time.sleep(max(0.0, sleep))
     r = session.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
@@ -327,6 +363,7 @@ def parse_person_detail(session: requests.Session, url: str, sleep: float = 0.2)
 
 # ---------------------- Personen aus Projekten gewinnen (optional) ----------------------
 
+
 def normalize_project_url(href: str) -> Optional[str]:
     try:
         u = urlparse(urljoin(DETAIL_BASE, href))
@@ -337,6 +374,7 @@ def normalize_project_url(href: str) -> Optional[str]:
     except Exception:
         pass
     return None
+
 
 def extract_person_links_from_project_html(soup: BeautifulSoup) -> List[str]:
     """
@@ -354,12 +392,17 @@ def extract_person_links_from_project_html(soup: BeautifulSoup) -> List[str]:
                 links.append(url)
     return links
 
+
 def collect_person_urls_from_projects(
     session: requests.Session, project_urls: List[str], sleep: float = 0.2
 ) -> List[str]:
     person_urls: List[str] = []
     seen: Set[str] = set()
-    pbar = tqdm(total=len(project_urls), desc="Scanne Projekte auf Personen", unit="proj") if tqdm else None
+    pbar = (
+        tqdm(total=len(project_urls), desc="Scanne Projekte auf Personen", unit="proj")
+        if tqdm
+        else None
+    )
     for purl in project_urls:
         try:
             time.sleep(max(0.0, sleep))
@@ -383,6 +426,7 @@ def collect_person_urls_from_projects(
 
 # ---------------------- Crawl-Modus 1: Personenseitenlisten ----------------------
 
+
 def fetch_person_list_soup(
     session: requests.Session, index: int, hits: int, sleep: float, debug: bool = False
 ) -> Tuple[BeautifulSoup, dict | None]:
@@ -404,10 +448,15 @@ def fetch_person_list_soup(
     assert soup is not None
     return soup, chosen_params
 
-def crawl_persons_from_lists(max_items: int, hits: int, sleep: float) -> List[Dict[str, object]]:
+
+def crawl_persons_from_lists(
+    max_items: int, hits: int, sleep: float
+) -> List[Dict[str, object]]:
     session = requests.Session()
     index = 0
-    soup, chosen_params = fetch_person_list_soup(session, index, hits, sleep, debug=True)
+    soup, chosen_params = fetch_person_list_soup(
+        session, index, hits, sleep, debug=True
+    )
 
     collected: List[Dict[str, object]] = []
     seen_links: Set[str] = set()
@@ -435,7 +484,9 @@ def crawl_persons_from_lists(max_items: int, hits: int, sleep: float) -> List[Di
                 if pbar:
                     pbar.update(1)
                 else:
-                    print(f"[{len(collected)}/{max_items}] {data.get('person_name', '')[:70]}")
+                    print(
+                        f"[{len(collected)}/{max_items}] {data.get('person_name', '')[:70]}"
+                    )
             except Exception as e:
                 collected.append(
                     {
@@ -478,24 +529,35 @@ def crawl_persons_from_lists(max_items: int, hits: int, sleep: float) -> List[Di
 
 # ---------------------- Crawl-Modus 2: Aus Projekten gespeiste Personenseiten ----------------------
 
-def crawl_persons_from_projects_json(projects_json_path: str, sleep: float) -> List[Dict[str, object]]:
+
+def crawl_persons_from_projects_json(
+    projects_json_path: str, sleep: float
+) -> List[Dict[str, object]]:
     """
     Nimmt dein bestehendes Projekte-JSON (aus gepris_grabber.py),
     ruft die Projektseiten ab, sammelt Personen-Links und lädt anschließend die Personendetails.
     """
     with open(projects_json_path, "r", encoding="utf-8") as f:
         projects = json.load(f)
-    project_urls = [p.get("url") for p in projects if isinstance(p, dict) and p.get("url")]
+    project_urls = [
+        p.get("url") for p in projects if isinstance(p, dict) and p.get("url")
+    ]
     project_urls = [u for u in project_urls if isinstance(u, str)]
 
     session = requests.Session()
-    person_urls = collect_person_urls_from_projects(session, project_urls, sleep=max(0.1, sleep / 2))
+    person_urls = collect_person_urls_from_projects(
+        session, project_urls, sleep=max(0.1, sleep / 2)
+    )
 
     # Deduplizieren
     person_urls = list(dict.fromkeys(person_urls))
 
     results: List[Dict[str, object]] = []
-    pbar = tqdm(total=len(person_urls), desc="Lese Personendetails", unit="pers") if tqdm else None
+    pbar = (
+        tqdm(total=len(person_urls), desc="Lese Personendetails", unit="pers")
+        if tqdm
+        else None
+    )
     for u in person_urls:
         try:
             data = parse_person_detail(session, u, sleep=max(0.1, sleep / 4))
@@ -520,6 +582,7 @@ def crawl_persons_from_projects_json(projects_json_path: str, sleep: float) -> L
 
 
 # ---------------------- Persist ----------------------
+
 
 def save_outputs(rows: List[Dict[str, object]], out_csv: str, out_json: str) -> None:
     fieldnames = [
@@ -555,11 +618,21 @@ def save_outputs(rows: List[Dict[str, object]], out_csv: str, out_json: str) -> 
 
 # ---------------------- CLI ----------------------
 
+
 def main():
     ap = argparse.ArgumentParser(description="GEPRIS Personen-Scraper")
-    ap.add_argument("--hits", type=int, default=50, help="Treffer pro Seite (GEPRIS Personenliste)")
-    ap.add_argument("--max", type=int, default=50, help="Maximale Anzahl zu sammelnder Personen (Listenmodus)")
-    ap.add_argument("--sleep", type=float, default=1.0, help="Pause zwischen Anfragen (Sek.)")
+    ap.add_argument(
+        "--hits", type=int, default=50, help="Treffer pro Seite (GEPRIS Personenliste)"
+    )
+    ap.add_argument(
+        "--max",
+        type=int,
+        default=50,
+        help="Maximale Anzahl zu sammelnder Personen (Listenmodus)",
+    )
+    ap.add_argument(
+        "--sleep", type=float, default=1.0, help="Pause zwischen Anfragen (Sek.)"
+    )
     ap.add_argument("--out-csv", default="gepris_persons.csv")
     ap.add_argument("--out-json", default="gepris_persons.json")
     ap.add_argument(
@@ -570,9 +643,13 @@ def main():
     args = ap.parse_args()
 
     if args.from_projects_json:
-        persons = crawl_persons_from_projects_json(args.from_projects_json, sleep=args.sleep)
+        persons = crawl_persons_from_projects_json(
+            args.from_projects_json, sleep=args.sleep
+        )
     else:
-        persons = crawl_persons_from_lists(max_items=args.max, hits=args.hits, sleep=args.sleep)
+        persons = crawl_persons_from_lists(
+            max_items=args.max, hits=args.hits, sleep=args.sleep
+        )
 
     save_outputs(persons, args.out_csv, args.out_json)
     print(f"Fertig: {len(persons)} Personen -> {args.out_csv} / {args.out_json}")
@@ -580,4 +657,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

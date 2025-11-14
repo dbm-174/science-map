@@ -1,8 +1,138 @@
-html, body { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
-#map { position: absolute; top: 0; right: 0; bottom: 0; left: 300px; }
-#sidebar { position: absolute; top: 0; left: 0; bottom: 0; width: 300px; overflow: auto; padding: 12px; background: #f7f7f7; border-right: 1px solid #ddd; }
-#filters { display: flex; gap: 6px; flex-direction: column; margin-bottom: 10px; }
-.marker-circle { border-radius: 50%; opacity: 0.85; border: 2px solid rgba(0,0,0,0.25); }
-.legend-item { display:flex; align-items:center; gap:8px; margin:4px 0; }
-.legend-color { width:14px; height:14px; border-radius:50%; border:1px solid #999; }
+/* ========== Basis / Variablen ========== */
+:root{
+  --font-family: system-ui, Arial, sans-serif;
+
+  /* Layout-Breiten/Höhen */
+  --sidebar-width: 420px;     /* linke Sidebar (#sidebar) */
+  --sidepanel-width: 580px;   /* rechtes Panel (.sidepanel) */
+  --timeseries-height: 120px; /* Höhe des Zeitverlaufs */
+
+  /* Farben/Linien */
+  --bg-panel: #fff;
+  --bg-sidebar: #f7f7f7;
+  --border: #ddd;
+}
+
+html, body{
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-family);
+}
+
+/* ========== Linke Sidebar ========== */
+#sidebar{
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-width);
+  overflow: auto;
+  padding: 12px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+}
+
+/* ========== Rechte Sidepanel ========== */
+.sidepanel{
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: var(--sidepanel-width);
+  max-width: 50vw;            /* begrenzt auf halbe Viewport-Breite */
+  overflow: auto;
+  padding: 8px 12px;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  box-shadow: -2px 0 4px rgba(0,0,0,0.04);
+  /* Optional: vom Nutzer ziehbar (nur Desktop-Browser) */
+  /* resize: horizontal; */
+}
+
+/* ========== Karte ========== */
+#map{
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--sidebar-width);     /* Platz für linke Sidebar */
+  right: var(--sidepanel-width);  /* Platz für rechte Sidepanel */
+}
+
+/* ========== Zeitverlauf / Charts ========== */
+#timeseries{
+  height: var(--timeseries-height);
+  min-height: 220px;
+  padding: 8px 10px;
+}
+
+/* Chart-Canvas passt immer an /
+#timeseries canvas,
+#topicChart{
+  display: block;
+  width: 100% !important;
+  height: 100% !important;    /* #topicChart hat sonst feste Höhe: hier flexibler */
+  max-width: 100%;
+}
+
+/* Wenn du statt 100% Höhe eine fixe möchtest, kommentiere oben height:100% aus
+   und nutze z.B.: 
+   #topicChart{ height: 240px !important; } */
+
+/* Popups in Leaflet lesbarer machen */
+.leaflet-popup-content{
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+/* ========== Form-/UI-Elemente in #sidebar ========== */
+#sidebar h2{ font-size: 16px; margin: 8px 0; }
+#filters{ display: flex; gap: 8px; flex-direction: column; margin-bottom: 12px; }
+fieldset{ border: 1px solid #e3e3e3; border-radius: 6px; padding: 8px; background: #fff; }
+legend{ padding: 0 6px; color: #444; }
+input[type="number"], select{
+  padding: 6px 8px;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  background: #fff;
+}
+button{
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #c8c8c8;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* ========== Responsive ========== */
+/* Unter 900px: Panels stapeln, Map oben, dann Sidebar, dann Sidepanel */
+@media (max-width: 900px){
+  /* schmalere Standardwerte */
+  :root{
+    --sidebar-width: 100%;
+    --sidepanel-width: 100%;
+    --timeseries-height: 240px;
+  }
+
+  #sidebar{
+    position: static;
+    width: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidepanel{
+    position: static;
+    width: auto;
+    max-width: none;
+    border-left: none;
+    box-shadow: none;
+  }
+
+  #map{
+    position: relative;
+    left: 0; right: 0;
+    height: 60vh; /* Karte bekommt eine Höhe, wenn sie nicht absolut ist */
+  }
+
+  /* Canvas bleibt flexibel */
+  #timeseries canvas,
+  #topicChart{
+    height: 100% !important;
+  }
+}
 

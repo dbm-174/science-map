@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Science Map – Workspace</title>
+
+  <!-- Dein globales CSS -->
+  <link rel="stylesheet" href="app.css" />
+
+  <!-- Leaflet CSS (für die Karte) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+</head>
+<body>
+  <aside id="menu">
+    <h1>Science Map</h1>
+
+    <section>
+      <h2>Apps</h2>
+      <label><input type="checkbox" data-app="map" checked> Karte</label><br/>
+      <label><input type="checkbox" data-app="timeseries" checked> Zeitverlauf</label><br/>
+      <label><input type="checkbox" data-app="list" checked> Liste</label><br/>
+      <label><input type="checkbox" data-app="cloud" checked> Wortwolke</label>
+    </section>
+
+    <section>
+      <h2>Layout</h2>
+      <div class="layouts" style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button data-layout="1">1</button>
+        <button data-layout="2v">2 ▮▮</button>
+        <button data-layout="2h">2 ▯▯</button>
+        <button data-layout="2x2">2×2</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Filter</h2>
+      <input type="text" id="search" placeholder="Suche…" />
+      <!-- Weitere Filter (Themen, Zeitraum etc.) kannst du hier ergänzen -->
+    </section>
+  </aside>
+
+  <main id="workspace" class="layout-2x2" aria-live="polite">
+    <!-- Grid-Zellen -->
+    <section class="pane" data-slot="a">
+      <header>
+        <strong>Karte</strong>
+        <div class="actions">
+          <button data-action="expand" title="Maximieren">⤢</button>
+          <button data-action="swap" title="Tauschen">⇄</button>
+          <button data-action="hide" title="Ausblenden">✕</button>
+        </div>
+      </header>
+      <div class="content">
+        <div id="app-map"><!-- Leaflet Mount --></div>
+      </div>
+    </section>
+
+    <section class="pane" data-slot="b">
+      <header>
+        <strong>Zeitverlauf</strong>
+        <div class="actions">
+          <button data-action="expand" title="Maximieren">⤢</button>
+          <button data-action="swap" title="Tauschen">⇄</button>
+          <button data-action="hide" title="Ausblenden">✕</button>
+        </div>
+      </header>
+      <div class="content">
+        <div id="app-timeseries"><!-- SVG Chart Mount --></div>
+      </div>
+    </section>
+
+    <section class="pane" data-slot="c">
+      <header>
+        <strong>Liste</strong>
+        <div class="actions">
+          <button data-action="expand" title="Maximieren">⤢</button>
+          <button data-action="swap" title="Tauschen">⇄</button>
+          <button data-action="hide" title="Ausblenden">✕</button>
+        </div>
+      </header>
+      <div class="content">
+        <div id="app-list"><!-- Tabelle / Liste --></div>
+      </div>
+    </section>
+
+    <section class="pane" data-slot="d">
+      <header>
+        <strong>Wortwolke</strong>
+        <div class="actions">
+          <button data-action="expand" title="Maximieren">⤢</button>
+          <button data-action="swap" title="Tauschen">⇄</button>
+          <button data-action="hide" title="Ausblenden">✕</button>
+        </div>
+      </header>
+      <div class="content">
+        <div id="app-cloud"><!-- Wordcloud Mount --></div>
+      </div>
+    </section>
+
+    <!-- Splitter (Drag-Griffe) -->
+    <div class="splitter v" data-split="col-1" aria-hidden="true"></div>
+    <div class="splitter h" data-split="row-1" aria-hidden="true"></div>
+  </main>
+
+  <!-- Mobile Menü-Taste -->
+  <button id="menuToggle" aria-label="Menü umschalten">☰</button>
+
+  <!-- Leaflet JS (für die Karte) -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <!-- Deine App als ES‑Modul laden -->
+  <script type="module" src="app2.js"></script>
+</body>
+</html>
+
